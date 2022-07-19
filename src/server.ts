@@ -4,6 +4,14 @@ import { getMapping, addMapping } from './backend';
 const app = express();
 app.use(json());
 
+app.get('/', (req, res) => {
+  res.send(`
+    Hello world!!!
+
+    This is my super simple URL shortener!
+  `);
+});
+
 app.post('/new', (req, res) => {
   const { from, to, description, owner, password } = req.body;
   // FIXME: Add some actual security
