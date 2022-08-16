@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { getMapping, addMapping } from './backend';
+import { getMapping, addMapping, getStats, validatePassword } from './backend';
 
 const app = express();
 app.use(json());
@@ -9,14 +9,17 @@ app.get('/', (req, res) => {
     Hello world!!!
 
     This is my super simple URL shortener!
+
+    Currently contains ${getStats().size} routes
   `);
 });
 
 app.post('/new', (req, res) => {
   const { from, to, description, owner, password } = req.body;
   // FIXME: Add some actual security
-  if (password != 'this is an example password that Im using as a placeholder until I bother to add some proper security') {
-    throw new Error('Yikes');
+  if (!validatePassword(password)) {
+    res.status(403).send('No');
+    return;
   }
   addMapping(from, to, description, owner);
   res.send('{}');
