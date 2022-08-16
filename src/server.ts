@@ -25,8 +25,8 @@ app.post('/new', (req, res) => {
   res.send('{}');
 });
 
-app.get('/inspect', (req, res) => {
-  const from = req.query.from as string;
+app.get('/inspect/:from', (req, res) => {
+  const from = req.params.from as string;
   res.send(getMapping(from));
 });
 
