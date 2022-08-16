@@ -13,8 +13,6 @@ interface IRedirect {
 
 const HOME = require('os').homedir();
 
-const HASH = crypto.createHash('sha256');
-
 // Path to data file
 const DATA_FILE = 'data.json';
 
@@ -53,7 +51,7 @@ export const setup = () => {
     console.log('Enter a password to use when adding redirects');
     password = prompt.hide('> ');
   }
-  stored_hash = HASH.update(password).digest('hex');
+  stored_hash = crypto.createHash('sha256').update(password).digest('hex');
   writeFileSync(`${HOME}/.quick-link-pass`, stored_hash, { encoding: 'utf-8' });
   console.log('Password saved!');
 }
@@ -82,7 +80,7 @@ export const getStats = () => {
 }
 
 export const validatePassword = (password: string): boolean => {
-  const hashed = HASH.update(password).digest('hex');
+  const hashed = crypto.createHash('sha256').update(password).digest('hex');
   return hashed === stored_hash;
 }
 
