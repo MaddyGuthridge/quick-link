@@ -9,6 +9,7 @@ interface IRedirect {
   to: string,
   description: string,
   owner: string,
+  visible: boolean,
 };
 
 const HOME = require('os').homedir();
@@ -37,6 +38,19 @@ const loadData = () => {
   try {
     data = new Map(JSON.parse(readFileSync(DATA_FILE, { encoding: 'utf-8' })));
   } catch { }
+  // Add missing fields
+  let changed = false;
+  for (const [k, v] of data.entries()) {
+    // Visible
+    if (v.visible === undefined) {
+      v.visible = false;
+      data.set(k, v);
+      changed = true;
+    }
+  }
+  if (changed) {
+    saveData();
+  }
   loadHash();
 };
 
@@ -62,21 +76,39 @@ export const getMapping = (from: string): IRedirect => {
   return result;
 };
 
-export const addMapping = (from: string, to: string, description: string, owner: string) => {
-  if (data.get(from) !== undefined) throw Error(`Mapping for ${from} already exists`);
-  data.set(from, {
-    from,
-    to,
-    description,
-    owner
-  });
-  saveData();
+export const addMapping = (
+    from: string,
+    to: string,
+    description: string,
+    owner: string,
+    visible: boolean,
+  ) => {
+    if (data.get(from) !== undefined) throw Error(`Mapping for ${from} already exists`);
+    data.set(from, {
+      from,
+      to,
+      description,
+      owner,
+      visible,
+    });
+    saveData();
 }
 
 export const getStats = () => {
   return {
     size: data.size
   }
+}
+
+export const listMappings = (): IRedirect[] => {
+  let ret: IRedirect[] = [];
+  for (const v of data.values()) {
+    // Filter to visible
+    if (v.visible) {
+      ret.push(v);
+    }
+  }
+  return ret;
 }
 
 export const validatePassword = (password: string): boolean => {

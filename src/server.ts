@@ -1,5 +1,11 @@
 import express, { json } from 'express';
-import { getMapping, addMapping, getStats, validatePassword } from './backend';
+import {
+  getMapping,
+  addMapping,
+  getStats,
+  validatePassword,
+  listMappings,
+} from './backend';
 
 const app = express();
 app.use(json());
@@ -15,14 +21,24 @@ app.get('/', (req, res) => {
 });
 
 app.post('/new', (req, res) => {
-  const { from, to, description, owner, password } = req.body;
-  // FIXME: Add some actual security
+  const { from, to, description, visible, owner, password } = req.body;
   if (!validatePassword(password)) {
     res.status(403).send('No');
     return;
   }
-  addMapping(from, to, description, owner);
+  addMapping(from, to, description, owner, visible);
   res.send('{}');
+});
+
+app.get('/list/', (req, res) => {
+  let str = listMappings().reduce((prev: string, curr) => {
+    return `${prev}* ${curr.from} => ${curr.to} (${curr.description})\n<br>\n`;
+  }, '').trim();
+  if (str.length == 0) {
+    res.send("No public mappings");
+  } else {
+    res.send(str);
+  }
 });
 
 app.get('/inspect/:from', (req, res) => {

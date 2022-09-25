@@ -105,3 +105,6 @@ dist
 
 # Data file
 data.json
+
+# Temporary files
+temp.*
