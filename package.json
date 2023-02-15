@@ -19,6 +19,7 @@
   "homepage": "https://github.com/MiguelGuthridge/quick-link#readme",
   "dependencies": {
     "express": "^4.18.1",
+    "forever": "^4.0.3",
     "prompt-sync": "^4.2.0",
     "ts-node": "^10.9.1"
   },

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "noImplicitAny": false,
-        "noEmit": true,
+        "noEmit": false,
         "resolveJsonModule": true,
         "downlevelIteration": true,
     },
